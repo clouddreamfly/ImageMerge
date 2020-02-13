@@ -6,4 +6,4 @@ python27
 depends: PIL、wxPython、py2exe
 
 ## 主界面图
-![ImageMerge 界面](doc/sample.png)
+![ImageMerge 界面](https://github.com/clouddreamfly/ImageMerge/blob/master/doc/sample.png)
