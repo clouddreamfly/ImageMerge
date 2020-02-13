@@ -3,7 +3,7 @@ ImageMerge图像合成工具，特别是做游戏开发中的数字图片拼接�
 
 ## 编译环境
 python27  
-depends: PIL、wxPython
+depends: PIL、wxPython、py2exe
 
 ## 主界面图
 ![ImageMerge 界面](doc/sample.png)
