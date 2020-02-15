@@ -1,4 +1,4 @@
-#!/user/python/bin
+#!/usr/python/bin
 #-*-coding:utf-8-*-
 
 from distutils.core import setup
