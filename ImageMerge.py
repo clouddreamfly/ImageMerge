@@ -4,11 +4,11 @@
 import os
 import sys
 import shutil
-from Tkconstants import *
-import Image
+from tkinter.constants import *
+from PIL import Image
 import string
 import fnmatch
-import ConfigParser
+import configparser as ConfigParser
 import wx
 
 class ImageMerge:
@@ -29,16 +29,16 @@ class ImageMerge:
         for i in range(0, len(file_names)):
             file_path = os.path.join(path, file_names[i])
             if os.path.isdir(file_path):
-                print 'DIR Name:' + file_path
+                print('DIR Name:' + file_path)
                 if contain_sub_path == True :
                     self.search_file(file_path, file_filter, contain_sub_path)
             else:
-                print 'File Name:' + file_names[i]
+                print('File Name:' + file_names[i])
                 if fnmatch.fnmatch(file_names[i],file_filter):
                     target_file_names.append(file_names[i])
-                    print 'File Path Name:' + file_path
+                    print('File Path Name:' + file_path)
                     
-        print target_file_names
+        print(target_file_names)
         for file_name in target_file_names:
             target_file_paths.append(os.path.join(path, file_name))
             
@@ -47,14 +47,14 @@ class ImageMerge:
 
     def read_file(self,paths,mode = 'r'):
         images = []
-        print 'read_file'
+        print('read_file')
         for file_path in paths:
             try:
                 images.append(Image.open(file_path,mode))
             except:
-                 print 'read file error:',file_path
+                 print('read file error:', file_path)
 
-        print 'read_file finished'
+        print('read_file finished')
         return images
     
     def merge(self,images,h_frame_count, v_frame_count, image_format = 'RGBA'):
@@ -67,10 +67,10 @@ class ImageMerge:
             single_width = images[0].size[0]
             single_height = images[0].size[1]
         else:
-            print "merge error!"
+            print("merge error!")
             return
         
-        print 'image merge'
+        print('image merge')
         target_size = (single_width*h_frame_count,single_height*v_frame_count)
         if self.__image_target == 0 :
             self.__image_target = Image.new(image_format,target_size)
@@ -78,7 +78,7 @@ class ImageMerge:
             del self.__image_target
             self.__image_target = Image.new(image_format,target_size)
             
-        print 'merge iamge size:',self.__image_target.size
+        print('merge iamge size:',self.__image_target.size)
 
         for i in range(0,v_frame_count):
             for j in range(0,h_frame_count):
@@ -89,13 +89,13 @@ class ImageMerge:
                 else:
                     break
 
-        print "merge finished!"
+        print("merge finished!")
 
     def save(self,path):
-        print 'save file path:'+ path
+        print('save file path:'+ path)
         if self.__image_target != 0 :
             self.__image_target.save(path)
-        print "save finished!"
+        print("save finished!")
 
 class Configure:
     """Image merge configure"""
@@ -114,7 +114,7 @@ class Configure:
         try:
             self.__config.readfp(open(path,'r'))
         except:
-            print "read error!"
+            print("read error!")
             return False
 
         if not self.__config.has_section("Options"):
@@ -158,7 +158,7 @@ class Configure:
         try:
             self.__config.write(open(path,'w'))
         except:
-            print "wirte error!"
+            print("wirte error!")
             return False
         
         return True
@@ -182,7 +182,7 @@ class FileDropTarget(wx.FileDropTarget):
                 if fnmatch.fnmatch(fileName,self.window.config.file_filter):
                     self.window.lbFilePath.Append(fileName)
                     self.window.file_drop_paths.append(fileName)
-        pass
+        return True
 
 class DrawPanel(wx.Panel):
     def __init__(self, parent):
@@ -204,7 +204,7 @@ class DrawPanel(wx.Panel):
         dc.Clear()
         
         dc.SetBrush(wx.Brush("GREY", wx.CROSSDIAG_HATCH))
-        windowsize= self.GetSizeTuple()
+        windowsize= self.GetClientSize()
         dc.DrawRectangle(0, 0, windowsize[0], windowsize[1])
 
         if self.draw_image != None:
@@ -225,7 +225,7 @@ class DrawPanel(wx.Panel):
                     scale_height = image_height*windowsize[1]/image_height
                 else:
                     pass
-                image = self.draw_image.ConvertToImage().Scale(scale_width,scale_height)
+                image = self.draw_image.ConvertToImage().Scale(int(scale_width),int(scale_height))
                 bmp = image.ConvertToBitmap()
                 
             if "gtk1" in wx.PlatformInfo:
@@ -254,7 +254,7 @@ class MainFrame(wx.Frame):
         try:
             self.config.read(self.config_file_name)
         except:
-            print "read configure error!"
+            print("read configure error!")
             
         #创建控件
         panel = wx.Panel(self)
@@ -406,7 +406,7 @@ class MainFrame(wx.Frame):
         try:
             self.config.write(self.config_file_name)
         except:
-            print "write configure error!"
+            print("write configure error!")
 
     def OnQuit(self, event):
         self.Close()
@@ -486,8 +486,8 @@ class MainFrame(wx.Frame):
         
     def OnClickedExecuteImageMerge(self, event):
 
-        print self.file_drop_paths
-        print self.config.search_dir
+        print(self.file_drop_paths)
+        print(self.config.search_dir)
         save_file_path = os.path.join(self.config.save_file_dir,self.config.save_file_name)
 
         if len(self.file_drop_paths) == 0:
